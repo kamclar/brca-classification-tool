@@ -8,7 +8,7 @@ The current editable working version of **BRCA Classification Tool** Question an
 
 ---
 
-## Project website
+## ENIGMA
 
 - [ENIGMA Consortium](https://enigmaconsortium.org)
 
