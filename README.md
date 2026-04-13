@@ -2,7 +2,7 @@
 
 ## Document
 
-The current editable working version of **BRCA Classification Tool** is available here:
+The current editable working version of **BRCA Classification Tool** Question and Answer document is available here:
 
 [Open the Word document on OneDrive](https://1drv.ms/f/c/1aa9bd7a5a77ad74/UgB0rXdaer2pIIAaY-AAAAAAAhYpHHbrAqYK_fE)
 
