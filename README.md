@@ -4,7 +4,7 @@
 
 The current editable working version of **BRCA Classification Tool** Question and Answer document is available here:
 
-[Open the Word document on OneDrive](https://1drv.ms/f/c/1aa9bd7a5a77ad74/UgB0rXdaer2pIIAaY-AAAAAAAhYpHHbrAqYK_fE)
+[Open the Word document on OneDrive]([https://1drv.ms/f/c/1aa9bd7a5a77ad74/UgB0rXdaer2pIIAaY-AAAAAAAhYpHHbrAqYK_fE](https://1drv.ms/w/c/1aa9bd7a5a77ad74/IQBYphXfM3QiRqQO-5WnK1HEAWVEoBILPrSUHuWnPN78_GU?e=N4QL0g))
 
 ---
 
