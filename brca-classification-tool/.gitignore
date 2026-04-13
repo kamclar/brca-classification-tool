@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (large)
+*.csv
+*.tsv
+*.xlsx
+!data/test_variants.csv
+
+# Cache
+.cache/
+*.cache
+
+# Logs
+*.log
+
+# API keys
+.env
+.env.local
+secrets.json
