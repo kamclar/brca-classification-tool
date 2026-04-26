@@ -1,0 +1,21 @@
+PREPROCESSED DATA (filtrované varianty)
+    ↓
+MODUL 1A: Automatická kritéria (existující zdroje)
+    - gnomAD frekvence → BA1, BS1, PM2
+    - Typ varianty + exon → PVS1
+    - Pozice v doméně + SpliceAI → BP1
+    - BayesDel, SpliceAI → PP3, BP4
+    - ClinVar lookup → PS1, PM5, existující klasifikace
+    + Validace pravidel (PM2 ne pro indely, BP1+BP4 ne dohromady...)
+    ↓
+MODUL 1B: MAVE lookup tabulka (musíme vytvořit)
+    - Findlay SGE → BRCA1 RING + BRCT
+    - Cheng 2025 → BRCA2
+    - Bouwman → BRCA1 missense
+    → PS3/BS3
+    ↓
+MODUL 2: LLM literatura search (pro VUS)
+    - PubMed search
+    - Extrakce funkčních studií → PS3/BS3
+    - Segregační data → PP1/BS4
+    - Case-control → PS4

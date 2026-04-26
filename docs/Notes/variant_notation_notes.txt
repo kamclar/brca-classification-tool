@@ -1,0 +1,116 @@
+Variant Notation Systems
+========================
+
+There are several ways to describe the same variant. Each has its purpose.
+
+
+1. HGVS Notation (Human Genome Variation Society)
+-------------------------------------------------
+
+This is the standard for clinical reporting. It describes the variant relative to a reference sequence (transcript or protein).
+
+c. notation (coding DNA):
+- relative to the coding sequence of a transcript
+- starts at the A of the ATG start codon = position 1
+- examples:
+    c.181T>G        = at position 181, T changed to G
+    c.5551_5552insT = between positions 5551 and 5552, T was inserted
+    c.68_69delAG    = positions 68 and 69 (AG) were deleted
+    c.9097del       = position 9097 was deleted
+    c.3668_3671dup  = positions 3668-3671 were duplicated
+
+p. notation (protein):
+- describes the effect on the protein
+- uses three-letter amino acid codes
+- examples:
+    p.(Cys61Gly)           = Cysteine at position 61 changed to Glycine
+    p.(Asp1851ValfsTer29)  = Aspartic acid at 1851 changed to Valine, 
+                             then frameshift (fs), stop after 29 amino acids
+    p.(Gln210Ter)          = Glutamine at 210 changed to stop codon (Ter = termination)
+    p.(Gln1395=)           = synonymous/silent, amino acid stays the same (=)
+    p.(?)                  = unknown effect (often for splice variants)
+
+The parentheses mean "predicted" - without RNA/protein analysis we are predicting the effect.
+
+g. notation (genomic):
+- absolute position on a chromosome
+- depends on genome version (GRCh37 vs GRCh38)
+- example:
+    g.43094464A>C   = at genomic position 43094464, A changed to C
+
+
+2. VCF Format (Variant Call Format)
+-----------------------------------
+
+Used in bioinformatics pipelines. Tab-separated columns:
+
+CHROM   POS         REF   ALT
+chr17   43094464    A     C
+
+This is genome-version dependent (coordinates change between GRCh37 and GRCh38).
+
+
+3. Simple notation
+------------------
+
+Sometimes you see simplified versions:
+
+    BRCA1 C61G          = protein change only
+    BRCA1:c.181T>G      = gene + c. notation
+    17:43094464:A:C     = chr:pos:ref:alt
+
+
+4. rsID (dbSNP)
+---------------
+
+Reference SNP identifier from dbSNP database:
+
+    rs28897672    = the C61G variant in BRCA1
+
+Not all variants have rsIDs.. mostly common polymorphisms.
+
+
+Which notation to use when
+--------------------------
+
+Situation                       Use this
+---------                       --------
+Clinical report                 HGVS (c. and p.) with transcript ID
+Database queries (ClinVar)      HGVS or gene + c. notation
+gnomAD lookup                   VCF format (chr-pos-ref-alt)
+Talking to colleagues           Usually protein (C61G) or c. notation
+VCF file processing             VCF format
+Literature search               Any.. articles use various formats
+
+
+Transcript matters!
+-------------------
+
+The same genomic change can have different c. notation depending on transcript:
+
+    NM_007294.4:c.181T>G    (BRCA1 canonical transcript)
+    NM_007300.4:c.???       (different BRCA1 transcript, different numbering)
+
+Always specify the transcript ID (NM_...) for clarity.
+
+For BRCA1/2 classification, ENIGMA uses:
+    BRCA1: NM_007294.4
+    BRCA2: NM_000059.4
+
+
+Common mistakes
+---------------
+
+1. Mixing up genome versions
+   - GRCh37 position is different from GRCh38
+   - c. notation stays the same (transcript-relative)
+
+2. Forgetting the transcript
+   - c.181T>G means nothing without knowing which transcript
+
+3. Protein notation without parentheses
+   - p.Cys61Gly = confirmed by experiment
+   - p.(Cys61Gly) = predicted from DNA change
+
+4. Off-by-one errors
+   - some old systems count from 0, HGVS counts from 1

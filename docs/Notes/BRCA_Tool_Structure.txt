@@ -1,0 +1,178 @@
+BRCA1/2 Variant Classification Tool — Structure
+
+================================================================================
+
+PREPROCESSED DATA (input)
+
+Filtered variants from NGS pipeline:
+- Quality filters applied (depth, QUAL, GQ)
+- Frequency prefilter applied
+- Format: chr, start, end, ref, alt, gene, transcript, c. notation, p. notation
+
+================================================================================
+
+MODULE 1A: Automatic Criteria (existing data sources)
+
+Data sources:
+- gnomAD v2.1 (exomes, non-cancer) + v3.1 (genomes, non-cancer)
+- ClinVar
+- BayesDel (precomputed scores)
+- SpliceAI (precomputed scores)
+
+Criteria evaluated:
+
+  Frequency-based (gnomAD):
+  - BA1: FAF > 0.1% in non-founder population → Stand-alone Benign
+  - BS1_Strong: FAF > 0.01% → -4 points
+  - BS1_Supporting: FAF > 0.002% → -1 point
+  - PM2_Supporting: Absent, depth ≥25, SNV only (not for indels!) → +1 point
+
+  Variant type and position:
+  - PVS1: Frameshift, nonsense, splice ±1,2 → strength based on exon (Table 4)
+  - BP1_Strong: Outside functional domain AND SpliceAI ≤0.1 → -4 points
+
+  In silico predictions:
+  - PP3: BayesDel ≥0.28 (in domain) OR SpliceAI ≥0.2 → +1 point
+  - BP4: BayesDel ≤0.15 AND SpliceAI ≤0.1 (in domain) → -1 point
+
+  ClinVar lookup:
+  - PS1: Same amino acid change as known pathogenic variant
+  - PM5_PTC: Different PTC in same exon as known pathogenic PTC
+  - Existing classification with expert panel review
+
+  Validation checks:
+  - PM2 not allowed for indels (ENIGMA specific)
+  - BP1 + BP4 not allowed together (double counting)
+  - PP5, BP6 not allowed (ClinGen SVI recommendation)
+  - PM4 not applicable (defunct in ENIGMA)
+  - Correct gnomAD version (v2.1 + v3.1, not v4)
+
+Output: List of criteria with points, warnings for rule violations
+
+================================================================================
+
+MODULE 1B + MODULE 2: Literature-based Criteria (PS3/BS3)
+
+Both modules have the same goal: obtain PS3/BS3 (and other criteria) from literature.
+
+MODULE 1B: MAVE Lookup Table (processed studies)
+- Studies already compiled into a lookup table
+- Simple lookup: is variant in table? → yes/no
+- ENIGMA approved assays (Table 9)
+
+Data sources:
+- Findlay et al. 2018 (SGE): BRCA1 RING + BRCT domains (~3,893 SNV)
+  URL: https://sge.gs.washington.edu/BRCA1/
+- Cheng et al. 2025 (Nature): BRCA2 HDR assay (~5,000 variants)
+- Bouwman et al. 2020: BRCA1 missense variants
+
+Table structure:
+- variant (c. notation)
+- gene
+- assay_type (SGE, HDR, complementation...)
+- result (functional / non-functional / intermediate)
+- PS3/BS3 strength (Strong, Moderate, Supporting)
+- source (publication reference)
+
+Output: PS3 or BS3 with appropriate strength if variant found in table
+
+---
+
+MODULE 2: LLM Literature Search (unprocessed studies)
+- Studies not yet compiled into a table
+- Smaller publications, case reports, new articles
+- LLM searches and extracts data
+- Human review required
+
+Search sources:
+- PubMed / PMC
+- bioRxiv / medRxiv (marked as preprint)
+
+Evidence types:
+- Functional studies → PS3/BS3
+- Segregation data in families → PP1/BS4
+- Case-control studies → PS4
+
+Method:
+- Search PubMed for variant + gene
+- Fetch abstracts and full text (PMC)
+- LLM extraction of structured data
+- Human review of extracted evidence
+
+Output: Suggested criteria with source references for human review
+
+================================================================================
+
+CLASSIFICATION
+
+Point system (ENIGMA):
+- Very Strong: +8 (pathogenic) / -8 (benign)
+- Strong: +4 / -4
+- Moderate: +2 / -2
+- Supporting: +1 / -1
+- BA1: Stand-alone Benign
+
+Final classification:
+- Pathogenic (Class 5): ≥10 points
+- Likely Pathogenic (Class 4): 6-9 points
+- VUS (Class 3): 0-5 points
+- Likely Benign (Class 2): -1 to -6 points
+- Benign (Class 1): ≤-7 points
+
+================================================================================
+
+IMPLEMENTATION PRIORITY
+
+Phase 1: Module 1A (automatic criteria)
+- gnomAD, ClinVar, BayesDel, SpliceAI integration
+- Rule validation
+- Can start immediately, APIs available
+
+Phase 2: Module 1B (MAVE lookup)
+- Download and compile data from publications
+- Create unified lookup table
+- Requires data preparation work
+
+Phase 3: Module 2 (literature search)
+- PubMed integration
+- LLM extraction pipeline
+- Human review interface
+
+================================================================================
+
+SCHEMA
+
+PREPROCESSED DATA (filtrované varianty)
+    ↓
+MODUL 1A: Automatická kritéria (existující zdroje)
+    - gnomAD frekvence → BA1, BS1, PM2
+    - Typ varianty + exon → PVS1
+    - Pozice v doméně + SpliceAI → BP1
+    - BayesDel, SpliceAI → PP3, BP4
+    - ClinVar lookup → PS1, PM5, existující klasifikace
+    + Validace pravidel (PM2 ne pro indely, BP1+BP4 ne dohromady...)
+    ↓
+MODUL 1B + MODUL 2: Kritéria z literatury (PS3/BS3)
+    1B = už zpracované studie (lookup tabulka)
+     2 = ještě nezpracované studie (LLM hledání)
+    - Findlay SGE → BRCA1 RING + BRCT
+    - Cheng 2025 → BRCA2
+    - Bouwman → BRCA1 missense
+    - PubMed search pro ostatní
+    → PS3/BS3, PP1/BS4, PS4
+
+================================================================================
+
+REFERENCES
+
+ENIGMA VCEP Specifications v1.2:
+https://cspec.genome.network/cspec/ui/svi/doc/GN092
+
+ACMG/AMP 2015 Guidelines:
+https://pubmed.ncbi.nlm.nih.gov/25741868/
+
+SGE BRCA1 Database:
+https://sge.gs.washington.edu/BRCA1/
+
+Cheng et al. 2025 (BRCA2 functional data):
+https://www.nature.com/articles/s41586-024-08388-8

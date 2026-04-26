@@ -1,0 +1,58 @@
+Genome Versions in Variant Classification
+=========================================
+
+There are two main reference genome versions in use:
+
+Version     Also called     Released    Status
+-------     -----------     --------    ------
+GRCh37      hg19            2009        Still widely used in clinical labs
+GRCh38      hg38            2013        Current standard
+
+
+What changes between versions
+-----------------------------
+
+The sequence of the reference genome is slightly different.. some gaps were filled, some errors corrected, some regions rearranged. This means the same variant has different genomic coordinates:
+
+BRCA1 c.181T>G (the famous C61G variant)
+
+    GRCh37: chr17:41246481:A>C
+    GRCh38: chr17:43094464:A>C
+                  ^^^^^^^^
+                  different position!
+
+The chromosome 17 sequence was updated.. so the "address" of the same variant moved.
+
+
+What does NOT change
+--------------------
+
+- HGVS notation (c. and p.) stays the same because it is relative to the transcript
+- Transcript ID (NM_007294.4) stays the same
+- Protein effect stays the same
+- Classification stays the same
+
+So BRCA1 c.181T>G p.(Cys61Gly) is the same variant regardless of genome version.
+
+
+Where it matters
+----------------
+
+1. gnomAD - different versions use different genome builds
+   - gnomAD v2.1 uses GRCh37
+   - gnomAD v3.1 uses GRCh38
+   - gnomAD v4 uses GRCh38
+
+2. VCF files - the coordinates in VCF depend on which reference was used for alignment
+
+3. API queries - you need to know which genome version the database expects
+
+
+For our classification tool
+------------
+
+We should probably:
+- Accept HGVS notation as input (genome-agnostic)
+- Convert to coordinates when needed for API queries
+- Keep track of which genome version each data source uses
+- Use liftover tools to convert between versions if needed
