@@ -119,6 +119,10 @@ Proto ENIGMA říká:
 PM2 se tedy v tomto kontextu používá pouze pro **SNV**.
 
 ---
+Optimizing Insertion and Deletion Detection Using Next-Generation Sequencing in the Clinical Laboratory
+https://pmc.ncbi.nlm.nih.gov/articles/PMC9808503/
+
+"Detection of insertions and deletions (InDels) by short-read next-generation sequencing (NGS) technology can be challenging because of frequent misaligned reads... misaligned reads in every case, ranging from 3% to 100% of reads with the InDel showing mismapped bases. Mismaps also increased with InDel size."
 
 ## Poznámka k notebooku
 
