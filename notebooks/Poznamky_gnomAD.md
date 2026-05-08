@@ -1,76 +1,135 @@
-**Co je gnomAD**
+# Co je gnomAD
 
-gnomAD (Genome Aggregation Database) je databáze která shromažďuje data ze sekvenování od stovek tisíc lidí:
+**gnomAD** (*Genome Aggregation Database*) je databáze, která shromažďuje data ze sekvenování od stovek tisíc lidí:
 
+- přibližně **140 000 exomů**  
+  *(kódující oblasti genomu)*
+- přibližně **76 000 genomů**  
+  *(celé genomy)*
 
+---
 
-\~140,000 exomů (kódující oblasti)
+## K čemu gnomAD slouží
 
-\~76,000 genomů (celé genomy)
+gnomAD říká, **jak častá je konkrétní genetická varianta v populaci**.
 
+Pokud je varianta:
 
+- **velmi častá**  
+  například **> 0,1 % populace**,  
+  je pravděpodobně **benigní**, protože tolik lidí by pravděpodobně nemělo závažné genetické onemocnění.
 
-**K čemu to slouží**
+- **vzácná nebo v gnomAD úplně chybí**,  
+  může být **patogenní**, ale samotná absence nestačí jako důkaz patogenity.
 
-Říká jak častá je varianta v populaci.
+---
 
-Pokud varianta:
+## Příklad
 
+Máme variantu:
 
+```text
+BRCA1 c.181T>G
+```
 
-Je velmi častá (>0.1% populace) -> pravděpodobně není patogenní, protože tolik lidí by nemělo nemoc
+Zeptáme se gnomAD:
 
-Je vzácná nebo chybí -> může být patogenní (ale nemusí)
+> Kolik lidí z těch přibližně 140 000 má tuto variantu?
 
+Odpověď:
 
+```text
+0 lidí
+```
 
-**Příklad**
+Varianta je tedy v gnomAD **absentní**.  
+To znamená, že **může být patogenní**, ale není to samo o sobě definitivní důkaz.
 
-Máme variantu BRCA1 c.181T>G. Zeptáme se gnomAD:
+---
 
+Jiná varianta:
 
+```text
+BRCA1 c.XXX
+```
 
-"Kolik lidí z těch 140,000 má tuto variantu?"
+Odpověď v gnomAD:
 
-Odpověď: 0 lidí -> varianta je absent -> může být patogenní
+```text
+1500 lidí
+```
 
+To odpovídá přibližně:
 
+```text
+1 %
+```
 
-Jiná varianta BRCA1 c.XXX:
+Varianta je tedy **běžná v populaci** a je pravděpodobně **benigní**.
 
+---
 
+## ENIGMA pravidla pro populační frekvence
 
-Odpověď: 1500 lidí (1%) -> varianta je běžná -> pravděpodobně benigní
+| Co říká gnomAD | Kritérium | Význam |
+|---|---|---|
+| **AF > 0,1 %** | **BA1** | Benigní kritérium. Varianta je považována za benigní a není potřeba ji dál řešit jako patogenní. |
+| **AF > 0,01 %** | **BS1 Strong** | Silný důkaz pro benigní interpretaci. |
+| **AF > 0,002 %** | **BS1 Supporting** | Slabší podpůrný důkaz pro benigní interpretaci. |
+| **Absent** | **PM2** | Slabý důkaz pro patogenitu, ale pouze pro **SNV**. |
 
+---
 
+## Proč se používá „non-cancer“ subset
 
-**ENIGMA pravidla pro frekvence**
+ENIGMA vyžaduje použití subsetu bez onkologických pacientů, tedy **non-cancer subset**.
 
-Co gnomAD říká		Kritérium		Význam
+Důvod:
 
-AF > 0.1%		BA1			Benign (hotovo, nic dalšího neřešit)
+Pokud má někdo patogenní variantu v **BRCA1** nebo **BRCA2**, mohl mít vyšší riziko nádorového onemocnění a mohl se proto dostat do databáze právě kvůli onkologické diagnóze.
 
-AF > 0.01%		BS1 			StrongSilný důkaz pro benign
+To by mohlo zkreslit populační frekvenci:
 
-AF > 0.002%		BS1 Supporting		Slabý důkaz pro benign
+```text
+patogenní varianta by vypadala častější,
+než skutečně je v běžné populaci
+```
 
-Absent			PM2			Slabý důkaz pro patogenní (jen pro SNV!)
+Proto se pro hodnocení frekvencí podle ENIGMA používá subset bez onkologických pacientů.
 
+---
 
+## Proč se PM2 nepoužívá pro indely
 
+**Indely** jsou inserční nebo deleční varianty.
 
+Tyto varianty jsou technicky obtížnější na detekci než jednoduché jednonukleotidové varianty (**SNV**).
 
-**Proč "non-cancer"**
+gnomAD je proto může podhodnocovat:
 
-ENIGMA vyžaduje subset bez onkologických pacientů. Důvod: Pokud má někdo BRCA mutaci, pravděpodobně měl rakovinu a je v databázi. To by zkreslilo frekvence - patogenní varianty by vypadaly častější než jsou v běžné populaci.
+```text
+varianta může být absentní ne proto, že je opravdu vzácná,
+ale proto, že ji sekvenování nebo variant calling nezachytily spolehlivě
+```
 
+Proto ENIGMA říká:
 
+> PM2 pro indely nepoužívat.
 
-**Proč PM2 ne pro indely**
+PM2 se tedy v tomto kontextu používá pouze pro **SNV**.
 
-Indely (inserční/deleční varianty) jsou technicky obtížnější na detekci. gnomAD je může podhodnocovat - varianta může být absent ne proto že je vzácná, ale proto že ji sekvenování nezachytilo. Proto ENIGMA říká: "PM2 pro indely nepoužívat."
+---
 
+## Poznámka k notebooku
 
+Tato část odpovídá:
 
-&#x20;buňka 10 (gnomAD Lookup) v notebooku *BRCA\_ACMG\_Criteria\_Module1\_v1.1.ipynb*
+```text
+buňka 10 – gnomAD Lookup
+```
 
+v notebooku:
+
+```text
+BRCA_ACMG_Criteria_Module1_v1.1.ipynb
+```
