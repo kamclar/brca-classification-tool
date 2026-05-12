@@ -32,9 +32,9 @@ Testovací sada: 13 variant z EQA cvičení
 - Podmínky: varianta mimo klinicky důležitou doménu AND SpliceAI ≤ 0.1 (musí být potvrzeno, ne chybějící)
 - Funkční domény BRCA1: RING (2–101), coiled-coil (1391–1424), BRCT (1650–1857)
 - Funkční domény BRCA2: PALB2 binding (10–40), DNA binding domain (2481–3186)
-  - BRC repeats nejsou zahrnuty — ENIGMA VCEP v1.2 Appendix J je neuvádí pro BP1/PP3/BP4
+  - BRC repeats nejsou zahrnuty - ENIGMA VCEP v1.2 Appendix J je neuvádí pro BP1/PP3/BP4
 
-### PP3 / BP4 — In silico predikce
+### PP3 / BP4-In silico predikce
 - BayesDel_noAF s gene-specific prahy (BRCA1: PP3 ≥ 0.28, BP4 ≤ 0.15; BRCA2: PP3 ≥ 0.30, BP4 ≤ 0.18)
 - SpliceAI: PP3 ≥ 0.2; BP4 vyžaduje SpliceAI ≤ 0.1 AND BayesDel ≤ threshold
 - PP3 ze SpliceAI se neaplikuje na splice_site varianty (ty jdou přes PVS1), nonsense/PTC, frameshift, ani exon delece
