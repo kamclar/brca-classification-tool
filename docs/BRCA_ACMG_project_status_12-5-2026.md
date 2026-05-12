@@ -1,4 +1,4 @@
-# BRCA1/2 ACMG Automatic Classification — stav projektu
+# BRCA1/2 ACMG Automatic Classification - stav projektu
 
 Datum: květen 2026  
 Referenční specifikace: ENIGMA VCEP v1.2  
