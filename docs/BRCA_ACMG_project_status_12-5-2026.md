@@ -23,7 +23,7 @@ Testovací sada: 13 variant z EQA cvičení
 - Rozhodovací strom podle ENIGMA Table 4
 - Frameshift a nonsense: NMD predikce pomocí ověřených exonových hranic (CDS souřadnice z NM_007294.4 / NM_000059.4, celková délka BRCA1 = 5592 bp, BRCA2 = 10257 bp)
 - NMD escape: poslední exon nebo posledních 50 bp předposledního exonu -> PVS1_Moderate (+2)
-- Speciální exony: exon 10 v BRCA1 i BRCA2 — downgrade platí pouze pro splice_site varianty kde skip exonu produkuje in-frame izoformu; frameshift/nonsense uvnitř exonu 10 dostane PVS1_Very Strong
+- Speciální exony: exon 10 v BRCA1 i BRCA2 - downgrade platí pouze pro splice_site varianty kde skip exonu produkuje in-frame izoformu; frameshift/nonsense uvnitř exonu 10 dostane PVS1_Very Strong
 - Splice site varianty: canonical ±1,2  -> Very Strong; non-canonical vyžaduje SpliceAI ≥ 0.2  -> Supporting; canonical s nízkým SpliceAI  -> flagováno pro manuální review
 - Exon delece: nelze automaticky rozlišit in-frame vs. out-of-frame  -> flagováno
 
