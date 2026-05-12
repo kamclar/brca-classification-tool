@@ -19,7 +19,7 @@ Testovací sada: 13 variant z EQA cvičení
 
 ## Implementovaná kritéria
 
-### PVS1 — Loss of function variants
+### PVS1 - Loss of function variants
 - Rozhodovací strom podle ENIGMA Table 4
 - Frameshift a nonsense: NMD predikce pomocí ověřených exonových hranic (CDS souřadnice z NM_007294.4 / NM_000059.4, celková délka BRCA1 = 5592 bp, BRCA2 = 10257 bp)
 - NMD escape: poslední exon nebo posledních 50 bp předposledního exonu -> PVS1_Moderate (+2)
@@ -27,7 +27,7 @@ Testovací sada: 13 variant z EQA cvičení
 - Splice site varianty: canonical ±1,2  -> Very Strong; non-canonical vyžaduje SpliceAI ≥ 0.2  -> Supporting; canonical s nízkým SpliceAI  -> flagováno pro manuální review
 - Exon delece: nelze automaticky rozlišit in-frame vs. out-of-frame  -> flagováno
 
-### BP1_Strong — Varianta mimo funkční doménu
+### BP1_Strong - Varianta mimo funkční doménu
 - Aplikuje se na: missense, synonymous/silent, inframe_deletion, inframe_insertion, inframe_delins, delins
 - Podmínky: varianta mimo klinicky důležitou doménu AND SpliceAI ≤ 0.1 (musí být potvrzeno, ne chybějící)
 - Funkční domény BRCA1: RING (2–101), coiled-coil (1391–1424), BRCT (1650–1857)
@@ -41,12 +41,12 @@ Testovací sada: 13 variant z EQA cvičení
 - PP3 a BP4 jsou oba Supporting (+1 / -1); PP3 ze SpliceAI a BayesDel se nestackují
 - Rozsah mezi prahy BP4 a PP3 je záměrně neinformativní
 
-### BP7 — Synonymous varianta bez splice efektu
+### BP7 - Synonymous varianta bez splice efektu
 - Aplikuje se pouze na silent/synonymous varianty UVNITŘ funkční domény a pouze pokud bylo splněno BP4
 - Silent varianty mimo doménu dostávají BP1_Strong (ne BP7)
 - Vyžaduje potvrzené SpliceAI ≤ 0.1 (None = nekritizovat)
 
-### BA1 / BS1 / PM2 — Populační frekvence
+### BA1 / BS1 / PM2 - Populační frekvence
 - Zdroj: lokální BRCA1/2 gnomAD cache (GRCh37, gnomAD v2.1 non-cancer)
 - BA1: max_AF > 0.1%, BS1_Strong: > 0.01%, BS1_Supporting: > 0.002%
 - PM2_Supporting: varianta absent z gnomAD (status = "absent") AND pokrytí ≥ 25×
