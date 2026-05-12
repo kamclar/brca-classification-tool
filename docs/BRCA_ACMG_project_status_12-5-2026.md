@@ -22,10 +22,10 @@ Testovací sada: 13 variant z EQA cvičení
 ### PVS1 — Loss of function variants
 - Rozhodovací strom podle ENIGMA Table 4
 - Frameshift a nonsense: NMD predikce pomocí ověřených exonových hranic (CDS souřadnice z NM_007294.4 / NM_000059.4, celková délka BRCA1 = 5592 bp, BRCA2 = 10257 bp)
-- NMD escape: poslední exon nebo posledních 50 bp předposledního exonu → PVS1_Moderate (+2)
+- NMD escape: poslední exon nebo posledních 50 bp předposledního exonu -> PVS1_Moderate (+2)
 - Speciální exony: exon 10 v BRCA1 i BRCA2 — downgrade platí pouze pro splice_site varianty kde skip exonu produkuje in-frame izoformu; frameshift/nonsense uvnitř exonu 10 dostane PVS1_Very Strong
-- Splice site varianty: canonical ±1,2 → Very Strong; non-canonical vyžaduje SpliceAI ≥ 0.2 → Supporting; canonical s nízkým SpliceAI → flagováno pro manuální review
-- Exon delece: nelze automaticky rozlišit in-frame vs. out-of-frame → flagováno
+- Splice site varianty: canonical ±1,2  -> Very Strong; non-canonical vyžaduje SpliceAI ≥ 0.2  -> Supporting; canonical s nízkým SpliceAI  -> flagováno pro manuální review
+- Exon delece: nelze automaticky rozlišit in-frame vs. out-of-frame  -> flagováno
 
 ### BP1_Strong — Varianta mimo funkční doménu
 - Aplikuje se na: missense, synonymous/silent, inframe_deletion, inframe_insertion, inframe_delins, delins
@@ -59,7 +59,7 @@ Testovací sada: 13 variant z EQA cvičení
 
 ### CoordinateResolver
 - Centrální první krok pro všechny lookups
-- Pořadí: VariantValidator → Mutalyzer → hardcoded fallback (pouze pro 13 testovacích variant, `USE_COORDINATE_FALLBACK = True`)
+- Pořadí: VariantValidator  -> Mutalyzer → hardcoded fallback zatim takhle (pouze pro 13 testovacích variant, `USE_COORDINATE_FALLBACK = True`)
 - Vrací GRCh37 a GRCh38 koordináty v jednom objektu `ResolvedVariant`
 - gnomAD/myvariant.info používá GRCh37, SpliceAI používá GRCh38
 
@@ -79,30 +79,6 @@ Testovací sada: 13 variant z EQA cvičení
 - Přípravný notebook `Prepare_SpliceAI_BRCA_Subset_v1_4_3` extrahuje BRCA1/2 regiony z Ensembl precomputed VCF (remote tabix nebo lokální stažení), zapíše bgzipped + tabix-indexed subset
 - Hlavní notebook načítá subset do paměti při startu; 497 487 SNV záznamů
 - Indely v aktuálním subsetu nejsou (Ensembl soubor je SNV-only)
-
----
-
-## Přesnost na testovací sadě (v1.5.6)
-
-**Celková accuracy: 3/13 = 23 %**
-
-| Varianta | Expert | Predikce | Body | Kritéria | Problém |
-|---|---|---|---|---|---|
-| BRCA1 c.509G>A | 1 | 2 | -4 | BP1 | Chybí BA1/BS1 z gnomAD (cache_missing) |
-| BRCA1 c.1534C>T | 1 | 2 | -4 | BP1 | Chybí BA1/BS1 z gnomAD |
-| BRCA1 c.3668_3671dup | 5 | 4 | +8 | PVS1_VS | Chybí PM2 (indel, správně) |
-| BRCA2 c.9097del | 5 | 4 | +8 | PVS1_VS | Chybí PM2 (indel) |
-| BRCA1 c.5551_5552insT | 4 | 3 | +2 | PVS1_Mod | NMD escape (penultimate exon 50bp), expert dal 4 |
-| BRCA2 c.(793+1…)del | **3** | **3** | 0 | — | Exon delece — nelze automaticky ✓ |
-| BRCA2 c.6147_6149del | 2 | 3 | 0 | — | Chybí BP4 (BayesDel pro inframe del v dbNSFP není) |
-| BRCA1 c.3891_3893del | **3** | **3** | 0 | — | ✓ |
-| BRCA1 c.4185G>A | 5 | 2 | -2 | BP4, BP7 | Synonymous s SpliceAI=0.97 → PP3 správně; BP4/BP7 se aplikují omylem (SpliceAI=0.97 > 0.1, BP4 by nemělo platit) — bug |
-| BRCA1 c.628C>T | 3 | 4 | +8 | PVS1 | Expert dal 3 — potřeba RNA/funkcionální data |
-| BRCA2 c.8953+2T>C | 3 | 4 | +8 | PVS1 | Canonical splice, RNA ukázala inframe skip → VUS, nelze automaticky |
-| BRCA1 c.3247A>C | **2** | **2** | -4 | BP1 | ✓ |
-| BRCA1 c.5217T>A | 4 | 3 | +1 | PP3 | Chybí PS1/segregace |
-
-Poznámka: nízká přesnost je očekávaná — gnomAD cache není připojena, chybí PS1/PS3/literatura.
 
 ---
 
@@ -126,8 +102,3 @@ Poznámka: nízká přesnost je očekávaná — gnomAD cache není připojena, 
 - **Lokální BayesDel tabulka** pro BRCA1/2 (eliminovat závislost na myvariant.info)
 - **Modul 2** — literární vyhledávání pro PS3, PP1, PS4
 
----
-
-## Zjištěné bugy (aktuální)
-
-- `c.4185G>A` (synonymous, SpliceAI=0.97): dostane BP4 a BP7 omylem. BP4 vyžaduje SpliceAI ≤ 0.1, ale varianta má SpliceAI=0.97 → BP4 se nesmí aplikovat. Zřejmě chyba v podmínce pro synonymous větev v `evaluate_pp3_bp4`.
