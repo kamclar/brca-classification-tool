@@ -1,0 +1,76 @@
+SpliceAI VCF vs Broad API findings
+Date: 2026-06-07
+
+Question
+Can the downloaded Illumina precomputed SpliceAI VCF be used as an API-equivalent
+offline replacement for Broad SpliceAI API calls?
+
+answer
+No, not as-is.
+
+Local VCF
+- File: variant_space_scan/data/spliceai_vcf/spliceai_scores.raw.snv.hg38.vcf.gz
+- Header: SpliceAIv1.3
+- fileDate: 20191004
+- reference: GRCh38/hg38
+- INFO format: ALLELE|SYMBOL|DS_AG|DS_AL|DS_DG|DS_DL|DP_AG|DP_AL|DP_DG|DP_DL
+
+Validation results
+1. API max mode
+   This matches the current backend-style aggregation: take the maximum SpliceAI
+   score across API transcript records.
+
+   Random sample:
+   - sample size: 50
+   - seed: 20260606
+   - validated after targeted retry: 50
+   - mismatches: 7
+
+2. API RefSeq mode
+   This restricts the API response to the canonical RefSeq transcript used by
+   the scan:
+   - BRCA1: NM_007294.4
+   - BRCA2: NM_000059.4
+
+   Random sample:
+   - sample size: 50
+   - seed: 20260606
+   - validated: 50
+   - mismatches: 3
+
+Main explanation
+There are two separate effects.
+
+1. Transcript aggregation difference
+   The Broad API returns many transcript-level records for BRCA1. Some newer or
+   non-canonical transcripts have higher scores than the canonical RefSeq
+   transcript. The current max-over-all-transcripts aggregation can therefore
+   produce values higher than the VCF.
+
+   Examples:
+   - BRCA1:c.6T>C: VCF 0.01, API max 0.02, API RefSeq 0.01
+   - BRCA1:c.73C>A: VCF 0.01, API max 0.03, API RefSeq 0.01
+   - BRCA1:c.21C>T: VCF 0.02, API max 0.04, API RefSeq 0.02
+   - BRCA1:c.21C>G: VCF 0.03, API max 0.05, API RefSeq 0.03
+
+2. Version or implementation difference
+   Even after restricting the API to the same canonical RefSeq transcript, some
+   variants still differ. This points to a difference between the downloaded
+   Illumina SpliceAIv1.3 VCF from 2019 and the current Broad API output.
+
+   RefSeq-mode mismatches:
+   - BRCA1:c.28G>T: VCF DS_AL 0.44, API RefSeq DS_AL 0.46
+   - BRCA1:c.43A>C: VCF DS_DL 0.00, API RefSeq DS_DL 0.01
+   - BRCA1:c.3G>A: VCF DS_AL 0.21, API RefSeq DS_AL 0.23
+
+Conclusion
+The VCF cache is useful for exploratory analysis, but it is not currently an
+API-equivalent cache. It should remain separated from the active scan cache
+unless we explicitly accept VCF semantics instead of Broad API semantics.
+
+Current safety state
+- VCF-derived entries were removed from the active scan SpliceAI cache.
+- Active overlay is back to API/server-cache-only values.
+- The standalone VCF-derived cache remains available for analysis:
+  variant_space_scan/data/spliceai_brca_snv_cache.json
+
